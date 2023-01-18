@@ -20,4 +20,4 @@ async def to_code(config):
     hub = await cg.get_variable(config[CONF_CAP1114_ID])
     cg.add(var.set_channel(config[CONF_CHANNEL] >> 1))
 
-    cg.add(hub.register_channel(var))
+    cg.add(hub.register_touch_channel(var))

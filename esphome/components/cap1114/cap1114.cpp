@@ -58,6 +58,10 @@ void CAP1114Component::dump_config() {
   ESP_LOGCONFIG(TAG, "  Manufacture ID: 0x%x", this->cap1114_manufacture_id_);
   ESP_LOGCONFIG(TAG, "  Revision ID: 0x%x", this->cap1114_revision_);
 
+  for(auto tc : this->touch_channels_) {
+    ESP_LOGCONFIG(TAG, " Touch Channel %d", tc->get_channel());
+  }
+
   switch (this->error_code_) {
     case COMMUNICATION_FAILED:
       ESP_LOGE(TAG, "Product ID or Manufacture ID of the connected device does not match a known CAP1114.");
@@ -78,18 +82,43 @@ void CAP1114Component::loop() {
     this->write_byte(CAP1114_REG_MAINSTAT, 0);
     // ESP_LOGCONFIG(TAG, " Touch %x %x", button_status, status);
 
-    for (auto *channel : this->channels_) {
+    for (auto *channel : this->touch_channels_) {
       channel->process(button_status);
     }
     cleared_ = false;
   }
   else {
     if (!cleared_) {
-      for (auto *channel : this->channels_) {
+      for (auto *channel : this->touch_channels_) {
         channel->process(0);
       }
       cleared_ = true;
     }
+  }
+}
+
+void CAP1114OutputChannel::write_state(bool state) {
+    uint16_t outputs;
+    (*cap1114_)->read_byte_16(CAP1114_REG_LED_OUTPUT, &outputs);
+
+    if (state) {
+      outputs |= (1 << channel_);
+    }
+    else {
+      outputs &= ~(1 << channel_);
+    }
+    (*cap1114_)->write_byte_16(CAP1114_REG_LED_OUTPUT, outputs);
+}
+
+void CAP1114OutputChannel::set_channel(uint8_t channel) {
+  if (cap1114_ && channel < 8) {
+    (*cap1114_)->write_byte(CAP1114_REG_LED_DIR, 1 << channel);
+  }
+}
+
+void CAP1114OutputChannel::set_open_drain(bool open_drain) {
+  if (cap1114_ && channel_ < 8) {
+    (*cap1114_)->write_byte(CAP1114_REG_OUTPUT_TYPE, 1 << channel_);
   }
 }
 
