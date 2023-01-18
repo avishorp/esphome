@@ -11,8 +11,11 @@ DEPENDENCIES = ["i2c"]
 AUTO_LOAD = ["binary_sensor", "output"]
 CODEOWNERS = ["@avishorp"]
 
-cap1114_ns = cg.esphome_ns.namespace("cap1114")
 CONF_CAP1114_ID = "cap1114_id"
+CONF_MIN_BRIGHTNESS = "min_brightness"
+CONF_MAX_BRIGHTNESS = "max_brightness"
+
+cap1114_ns = cg.esphome_ns.namespace("cap1114")
 CAP1114Component = cap1114_ns.class_("CAP1114Component", cg.Component, i2c.I2CDevice)
 
 MULTI_CONF = True
@@ -38,6 +41,12 @@ async def to_code(config):
     if CONF_RESET_PIN in config:
         pin = await cg.gpio_pin_expression(config[CONF_RESET_PIN])
         cg.add(var.set_reset_pin(pin))
+
+    if CONF_MIN_BRIGHTNESS in config:
+        cg.add(var.set_min_brightness(config[CONF_MIN_BRIGHTNESS]))
+
+    if CONF_MAX_BRIGHTNESS in config:
+        cg.add(var.set_max_brightness(config[CONF_MAX_BRIGHTNESS]))
 
     await cg.register_component(var, config)
     await i2c.register_i2c_device(var, config)

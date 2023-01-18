@@ -16,7 +16,7 @@ CONFIG_SCHEMA = BINARY_OUTPUT_SCHEMA.extend(
         cv.Required(CONF_ID): cv.declare_id(CAP1114Output),
         cv.GenerateID(CONF_CAP1114_ID): cv.use_id(CAP1114Component),
         cv.Required(CONF_CHANNEL): cv.int_range(min=1, max=11),
-        cv.Optional(CONF_OPEN_DRAIN): cv.boolean,
+        cv.Optional(CONF_OPEN_DRAIN, False): cv.boolean,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
