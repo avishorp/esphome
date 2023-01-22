@@ -14,7 +14,6 @@ CONFIG_SCHEMA = binary_sensor.binary_sensor_schema(CAP1114Channel).extend(
     }
 )
 
-
 async def to_code(config):
     var = await binary_sensor.new_binary_sensor(config)
     hub = await cg.get_variable(config[CONF_CAP1114_ID])

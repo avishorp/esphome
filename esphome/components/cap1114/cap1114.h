@@ -53,7 +53,7 @@ class CAP1114OutputChannel : public output::BinaryOutput, public Component {
     void set_open_drain(bool open_drain) { open_drain_ = open_drain; };
     bool get_open_drain() const { return open_drain_; }
     virtual void write_state(bool state);
-
+  
   protected:
     uint8_t channel_{0};
     bool open_drain_{false};

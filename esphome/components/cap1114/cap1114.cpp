@@ -114,7 +114,7 @@ void CAP1114Component::loop() {
   }
 }
 
-void CAP1114OutputChannel::write_state(bool state) {
+void CAP1114OutputChannel::write_state(bool state) {  
     uint16_t outputs;
     (*cap1114_)->read_byte_16(CAP1114_REG_LED_OUTPUT, &outputs);
     uint16_t shift = channel_ >= 8? (1 << (channel_ - 8)) : (1 << (channel_ + 8));

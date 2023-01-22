@@ -24,7 +24,11 @@ CONFIG_SCHEMA = (
         {
             cv.GenerateID(): cv.declare_id(CAP1114Component),
             cv.Optional(CONF_RESET_PIN): pins.gpio_output_pin_schema,
-            cv.Optional(CONF_SENSITIVITY, default=5): cv.int_range(min=0, max=7),
+            cv.Optional(CONF_SENSITIVITY, default=5): cv.int_range(
+                min=0, max=7
+            ),
+            cv.Optional(CONF_MIN_BRIGHTNESS): cv.int_range(0, 15),
+            cv.Optional(CONF_MAX_BRIGHTNESS): cv.int_range(0, 15),
             cv.Optional(CONF_ALLOW_MULTIPLE_TOUCHES, default=False): cv.boolean,
         }
     )
@@ -41,7 +45,7 @@ async def to_code(config):
     if CONF_RESET_PIN in config:
         pin = await cg.gpio_pin_expression(config[CONF_RESET_PIN])
         cg.add(var.set_reset_pin(pin))
-
+    
     if CONF_MIN_BRIGHTNESS in config:
         cg.add(var.set_min_brightness(config[CONF_MIN_BRIGHTNESS]))
 
