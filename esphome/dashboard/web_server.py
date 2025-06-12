@@ -768,7 +768,7 @@ class ListDevicesHandler(BaseHandler):
 
 class MainRequestHandler(BaseHandler):
     @authenticated
-    def get(self) -> None:
+    def get(self, _: str) -> None:
         begin = bool(self.get_argument("begin", False))
         if settings.using_password:
             # Simply accessing the xsrf_token sets the cookie for us
@@ -1130,7 +1130,8 @@ def get_static_path(*args: Iterable[str]) -> str:
 
 @functools.cache
 def get_static_file_url(name: str) -> str:
-    base = f"./static/{name}"
+    rel = settings.relative_url
+    base = f"{rel}static/{name}"
 
     if ENV_DEV in os.environ:
         return base
@@ -1194,7 +1195,6 @@ def make_app(debug=get_bool_env(ENV_DEV)) -> tornado.web.Application:
     rel = settings.relative_url
     return tornado.web.Application(
         [
-            (f"{rel}", MainRequestHandler),
             (f"{rel}login", LoginHandler),
             (f"{rel}logout", LogoutHandler),
             (f"{rel}logs", EsphomeLogsHandler),
@@ -1228,6 +1228,7 @@ def make_app(debug=get_bool_env(ENV_DEV)) -> tornado.web.Application:
             (f"{rel}boards/([a-z0-9]+)", BoardsRequestHandler),
             (f"{rel}version", EsphomeVersionHandler),
             (f"{rel}ignore-device", IgnoreDeviceRequestHandler),
+            (f"{rel}(.*)", MainRequestHandler),
         ],
         **app_settings,
     )

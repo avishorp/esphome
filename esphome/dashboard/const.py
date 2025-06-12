@@ -1,4 +1,5 @@
 from __future__ import annotations
+import sys
 
 EVENT_ENTRY_ADDED = "entry_added"
 EVENT_ENTRY_REMOVED = "entry_removed"
@@ -9,4 +10,4 @@ MAX_EXECUTOR_WORKERS = 48
 
 SENTINEL = object()
 
-DASHBOARD_COMMAND = ["esphome", "--dashboard"]
+DASHBOARD_COMMAND = [sys.executable, "-m", "esphome", "--dashboard"]
